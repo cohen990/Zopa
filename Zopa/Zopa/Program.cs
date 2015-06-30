@@ -44,8 +44,28 @@ namespace Zopa
 				return;
 			}
 
-			Console.WriteLine("Found {0} lenders", lenders.Count);
-			Console.WriteLine("loanAmount: {0}", loanAmount);
+			var quote = new QuoteService().Get(lenders, loanAmount);
+
+			if (!quote.Available)
+			{
+				Console.WriteLine("Unfortunately, we do not currently have the funds to loan to you. Please try a smaller amount.");
+
+				Console.WriteLine("Press any key to exit...");
+				Console.ReadLine();
+				return;
+			}
+
+			/*
+				Requested amount: £XXXX
+				Rate: X.X%
+				Monthly repayment: £XXXX.XX
+				Total repayment: £XXXX.XX
+			*/
+
+			Console.WriteLine("Requested amount: {0}", loanAmount.ToString("C0"));
+			Console.WriteLine("Rate: {0}", quote.Rate.ToString("P1"));
+			// Do Repayment service next
+			//Console.WriteLine("Monthly repayment: {0}", quote.Rate.ToString("P1"));
 
 			Console.ReadLine();
 		}
