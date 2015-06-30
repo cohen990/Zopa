@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
+using Zopa;
 
 namespace ZopaTests
 {
@@ -177,58 +177,5 @@ namespace ZopaTests
 
 			Assert.That(result.Count(x => x.Name == "Dave"), Is.EqualTo(1));
 		}
-	}
-
-	public class CsvLoader
-	{
-		public string GetAsString(string csvLocation)
-		{
-			if (string.IsNullOrWhiteSpace(csvLocation))
-				throw new ArgumentException("Parameter 'csvLocation' cannot be empty", csvLocation);
-
-			var content = File.ReadAllText(csvLocation);
-
-			return content;
-		}
-
-		public List<Lender> GetLenders(string commaSeparatedLenders)
-		{
-			if (string.IsNullOrWhiteSpace(commaSeparatedLenders))
-				return new List<Lender>();
-
-			var lenders = new List<Lender>();
-
-			var rows = commaSeparatedLenders.Split('\n');
-
-			rows = rows.Where(x => !x.StartsWith("Lender,Rate,Available") && !string.IsNullOrWhiteSpace(x)).ToArray();
-
-			foreach (var row in rows)
-			{
-				var columns = row.Split(',');
-
-				var name = columns[0];
-				var rate = double.Parse(columns[1]);
-				var amountAvailable = decimal.Parse(columns[2]);
-				
-				lenders.Add(new Lender
-				{
-					Name = name,
-					Rate = rate,
-					AmountAvailable = amountAvailable
-				});
-			}
-
-			return lenders;
-		}
-	}
-
-	[DebuggerDisplay("Lender: {Name}")]
-	public class Lender
-	{
-		public string Name { get; set; }
-
-		public double Rate { get; set; }
-
-		public decimal AmountAvailable { get; set; }
 	}
 }
